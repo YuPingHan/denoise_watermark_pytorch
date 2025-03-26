@@ -1,0 +1,36 @@
+# dataset
+train_data_list: dataset/gen_i2i_watermark_remove/finals/gen_i2i_watermark_remove_train_v1.2.txt # start from homedir
+val_data_list: dataset/gen_i2i_watermark_remove/finals/gen_i2i_watermark_remove_val_v1.2.txt # start from homedir
+dataloader_num_workers: 8
+data_mode: image # patch, image
+load_mode: rgb # gray, rgb
+patch_size: 50
+overlap: 30
+
+# data augment
+resize_size: 256 # 0 or > 0
+crop_size: 224 # 0 or > 0
+flip_h: False
+flip_v: False
+rotate_angle: 0 # 0 or > 0
+jitter: False
+
+# model config
+model_type: unet # cnn, unet
+
+# train schedule
+epochs: 20
+batch_size: 4
+val_batch_size: 4
+device: cuda:3
+val_device: cuda
+lr: 0.001
+beta_1: 0.9
+beta_2: 0.999
+weight_decay: 0.0000001
+clipnorm: 15
+
+# log and save
+print_interval: 10
+logs_dir: logs
+save_root_dir: runs
