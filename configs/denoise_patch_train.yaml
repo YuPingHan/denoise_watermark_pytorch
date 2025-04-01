@@ -3,20 +3,20 @@ train_data_list: dataset/gen_i2i_watermark_remove/finals/gen_i2i_watermark_remov
 val_data_list: dataset/gen_i2i_watermark_remove/finals/gen_i2i_watermark_remove_val_v1.2.txt # start from homedir
 dataloader_num_workers: 8
 data_mode: patch # patch, image
-load_mode: gray # gray, rgb
+load_mode: rgb # gray, rgb
 patch_size: 60
 overlap: 30
 
 # data augment
 resize_size: 60 # 0 or > 0
 crop_size: 50 # 0 or > 0
-flip_h: False
-flip_v: False
-rotate_angle: 0 # 0 or > 0
+flip_h: True
+flip_v: True
+rotate_angle: 10 # 0 or > 0
 jitter: False
 
 # model config
-model_type: unet # cnn, unet
+model_type: cnn # cnn, resnet, unet
 
 # train schedule
 epochs: 20

@@ -84,17 +84,24 @@ def hanning(size):
     return ret
 
 
-def patch2img(data, original_images, patch_size, overlap):
+def patch2img(data, original_images, patch_size, overlap, c):
     count = 0
     images = []
     window = hanning(patch_size)
+    if c != 1:
+        window = np.expand_dims(window, 2)
+        window = np.tile(window, (1, 1, 3))
 
     for i in range(0, len(original_images)):
         size_y = original_images[i].shape[0]
         size_x = original_images[i].shape[1]
-        
-        images.append(np.zeros((size_y, size_x), np.float64))
-        weight = np.zeros((size_y, size_x), np.float64)
+
+        if c == 1:
+            images.append(np.zeros((size_y, size_x), np.float64))
+            weight = np.zeros((size_y, size_x), np.float64)
+        else:
+            images.append(np.zeros((size_y, size_x, c), np.float64))
+            weight = np.zeros((size_y, size_x, c), np.float64)
         num_y = math.ceil((size_y - patch_size) / (patch_size - overlap)) + 1
         num_x = math.ceil((size_x - patch_size) / (patch_size - overlap)) + 1
 
@@ -107,12 +114,19 @@ def patch2img(data, original_images, patch_size, overlap):
                 if y + patch_size >= size_y:
                     y = size_y - patch_size
                 img_copy = images[i]
+                #print(f'data[count].shape: {data[count].shape}, window.shape: {window.shape}, img_copy.shape: {img_copy.shape}, weight.shape: {weight.shape}')
 
-                mul = np.multiply(data[count].reshape(patch_size, patch_size), window)
+                if c == 1:
+                    mul = np.multiply(data[count].reshape(patch_size, patch_size), window)
+                    img_copy[y:y+patch_size, x:x+patch_size] += mul
+                    weight[y: y+patch_size, x:x+patch_size] += window
+                    images[i] = img_copy
+                else:
+                    mul = np.multiply(data[count].reshape(patch_size, patch_size, c), window)
+                    img_copy[y:y+patch_size, x:x+patch_size] += mul
+                    weight[y: y+patch_size, x:x+patch_size] += window
+                    images[i] = img_copy
 
-                img_copy[y:y+patch_size, x:x+patch_size] += mul
-                weight[y: y+patch_size, x:x+patch_size] += window
-                images[i] = img_copy
                 count = count + 1
 
         images[i] = np.divide(images[i], weight)

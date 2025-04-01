@@ -22,7 +22,6 @@ class DenoisePatchDataset(Dataset):
         data_list = open(data_list).read().splitlines()
         ori_imgs = []
         cleaned_imgs = []
-        ic = 1 if load_mode == 'gray' else 3 # input_channel
         for row in data_list:
             ori_img_path, cleaned_img_path = row.split('\t')
             ori_img_path = norm_homedir(ori_img_path)

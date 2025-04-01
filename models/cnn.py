@@ -5,7 +5,7 @@ import torch.nn.functional as F
 
 class CNN(nn.Module):
     def __init__(self, ic, oc):
-        super(DenoiseModel, self).__init__()
+        super(CNN, self).__init__()
         
         # hidden units
         nstates = [96, 96, 96, 96, 96]
@@ -80,7 +80,7 @@ class ResidualBlock(nn.Module):
 
 class ResNet(nn.Module):
     def __init__(self, ic, oc):
-        super(DenoiseModel, self).__init__()
+        super(ResNet, self).__init__()
 
         # hidden units
         nstates = [96, 96, 96, 96, 96]

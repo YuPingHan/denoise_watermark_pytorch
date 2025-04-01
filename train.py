@@ -106,9 +106,11 @@ def main(args):
 
     # build model
     model_type = configs['model_type']
-    assert model_type in ['cnn', 'unet'], print('model_type must be cnn or unet')
+    assert model_type in ['cnn', 'resnet', 'unet'], print('model_type must be cnn, resnet or unet')
     c = 1 if load_mode == 'gray' else 3
     if model_type == 'cnn':
+        model = CNN(c, c)
+    elif model_type == 'resnet':
         model = ResNet(c, c)
     else:
         model = UNet(c, c)
@@ -158,6 +160,10 @@ def main(args):
         if val_loss < best_val_loss:
             best_val_loss = val_loss
             torch.save(model.state_dict(), best_weight_path)
+
+        epoch_weight_name = f'{epoch}epoch.pt'
+        epoch_weight_path = os.path.join(save_dir, epoch_weight_name)
+        torch.save(model.state_dict(), epoch_weight_path)
 
     torch.save(model.state_dict(), last_weight_path)
 

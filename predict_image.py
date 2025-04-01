@@ -52,6 +52,8 @@ for img_name in img_names:
 # build model
 c = 1 if load_mode == 'gray' else 3
 if model_type == 'cnn':
+    model = CNN(c, c)
+elif model_type == 'resnet':
     model = ResNet(c, c)
 else:
     model = UNet(c, c)
@@ -89,7 +91,8 @@ for i, img in enumerate(imgs):
         pred = predictions[i][0]
         print(pred.shape)
         pred = np.transpose(pred, (1, 2, 0)) * 255
-        pred = np.squeeze(pred)
+        if pred.shape[-1] == 1:
+            pred = np.squeeze(pred, axis=-1)
         pred = pred.astype(np.uint8)
         print(f'img shape: {img.shape}, gap_img shape: {gap_img.shape}, pred shape: {pred.shape}')
         image = np.concatenate([img, gap_img, pred], axis=1)
