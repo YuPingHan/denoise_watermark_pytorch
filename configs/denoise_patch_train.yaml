@@ -1,5 +1,5 @@
 # dataset
-train_data_list: dataset/gen_i2i_watermark_remove/finals/gen_i2i_watermark_remove_train_v1.2.txt # start from homedir
+train_data_list: dataset/gen_i2i_watermark_remove/finals/gen_i2i_watermark_remove_train_v2.2.txt # start from homedir
 val_data_list: dataset/gen_i2i_watermark_remove/finals/gen_i2i_watermark_remove_val_v1.2.txt # start from homedir
 dataloader_num_workers: 8
 data_mode: patch # patch, image
@@ -19,12 +19,14 @@ jitter: False
 model_type: cnn # cnn, resnet, unet
 
 # train schedule
-epochs: 20
+epochs: 30
+warmup_epochs: 3
 batch_size: 32
 val_batch_size: 32
 device: cuda:1
 val_device: cuda
-lr: 0.001
+lr: 0.003
+min_lr: 0.0001
 beta_1: 0.9
 beta_2: 0.999
 weight_decay: 0.0000001

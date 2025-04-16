@@ -205,9 +205,11 @@ def log_configs(logfile, configs):
 
     # log train schedule
     logfile.write(f'epochs: {configs["epochs"]}\n')
+    logfile.write(f'warmup_epochs: {configs["warmup_epochs"]}\n')
     logfile.write(f'batch_size: {configs["batch_size"]}\n')
     logfile.write(f'val_batch_size: {configs["val_batch_size"]}\n')
-    #logfile.write(f'warmup_epochs: {configs["warmup_epochs"]}\n')
+    logfile.write(f'lr: {configs["lr"]}\n')
+    logfile.write(f'min_lr: {configs["min_lr"]}\n')
     logfile.write(f'beta_1: {configs["beta_1"]}\n')
     logfile.write(f'beta_2: {configs["beta_2"]}\n')
     logfile.write(f'weight_decay: {configs["weight_decay"]}\n')
@@ -225,5 +227,8 @@ def log_configs(logfile, configs):
 
 
 if __name__ == '__main__':
-    data_list = 'gen_i2i_watermark_remove_train_v0.0.txt'
-    print(get_ds_info(data_list))
+    img = np.ones((51, 50, 3), dtype=np.uint8)
+    patches = img2patch([img], 50, 30)
+    print(len(patches))
+    #data_list = 'gen_i2i_watermark_remove_train_v0.0.txt'
+    #print(get_ds_info(data_list))

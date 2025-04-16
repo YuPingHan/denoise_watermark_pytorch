@@ -15,6 +15,7 @@ from dataset.data_aug import get_transform
 from models.cnn import CNN, ResNet
 from models.unet import UNet
 from utils import get_train_name, log_configs
+from lr_utils import WarmupCosineAnnealingLR
 
 
 def get_args():
@@ -118,6 +119,7 @@ def main(args):
     # loss and optimizer
     EPOCHS = configs['epochs']
     lr = configs['lr']
+    min_lr = configs['min_lr']
     beta_1 = configs['beta_1']
     beta_2 = configs['beta_2']
     weight_decay = configs['weight_decay']
@@ -126,6 +128,8 @@ def main(args):
     loss_fn = nn.L1Loss()
     #val_loss_fn = nn.MSELoss(reduction='sum')
     optimizer = optim.Adam(model.parameters(), lr=lr, betas=(beta_1, beta_2), weight_decay=weight_decay)
+    warmup_epochs = configs['warmup_epochs']
+    scheduler = WarmupCosineAnnealingLR(optimizer, warmup_epochs=warmup_epochs, total_epochs=EPOCHS, min_lr=min_lr)
 
     # train
     device = configs['device']
@@ -156,6 +160,9 @@ def main(args):
 
         step = epoch * len(train_loader)
         writer.add_scalar('Loss/val_loss', val_loss, step)
+        lr = scheduler.get_last_lr()[0]
+        writer.add_scalar('LR/train', lr, step)
+        scheduler.step()
 
         if val_loss < best_val_loss:
             best_val_loss = val_loss
