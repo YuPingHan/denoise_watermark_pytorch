@@ -33,6 +33,7 @@ class DenoisePatchDataset(Dataset):
                 #ori_img = Image.open(ori_img_path).convert('RGB')
                 ori_img = cv2.imread(ori_img_path, cv2.IMREAD_COLOR)
                 ori_img = cv2.cvtColor(ori_img, cv2.COLOR_BGR2RGB)
+            #ori_img = self.load_img(ori_img_path, load_mode)
             if ori_img is None:
                 continue
             ori_imgs.append(ori_img)
@@ -44,6 +45,7 @@ class DenoisePatchDataset(Dataset):
                 #cleaned_img = Image.open(cleaned_img_path).convert('RGB')
                 cleaned_img = cv2.imread(cleaned_img_path, cv2.IMREAD_COLOR)
                 cleaned_img = cv2.cvtColor(cleaned_img, cv2.COLOR_BGR2RGB)
+            #cleaned_img = self.load_img(cleaned_img_path, load_mode)
             cleaned_imgs.append(cleaned_img)
 
         ori_data = img2patch(ori_imgs, patch_size, overlap)
@@ -56,6 +58,27 @@ class DenoisePatchDataset(Dataset):
         self.ori_data = ori_data
         self.cleaned_data = cleaned_data
         self.transform = transform
+
+
+    def load_img(self, img_path, load_mode):
+        img = cv2.imread(img_path, cv2.IMREAD_UNCHANGED)
+        if load_mode == 'gray':
+            if img.ndim == 3:
+                if img.shape[2] == 3:
+                    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                else: # img.shape[2] = 4
+                    img = cv2.cvtColor(img, cv2.COLOR_BGRA2GRAY)
+        else: # 'rgb'
+            if img.ndim == 3:
+                if img.shape[2] == 3:
+                    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+                else:
+                    img = cv2.cvtColor(img, cv2.COLOR_BGRA2RGB)
+            else:
+                img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
+
+        return img
+
 
     def __getitem__(self, idx):
         ori_patch = self.ori_data[idx]
@@ -128,17 +151,17 @@ if __name__ == '__main__':
         ToTensorTransform()
     ]) 
 
-    data_list = '/data4/hanyp/dataset/gen_i2i_watermark_remove/finals/gen_i2i_watermark_remove_val_v0.0.txt'
-    #dataset = DenoisePatchDataset(data_list, transform=data_transforms, load_mode='rgb')
-    #print(len(dataset))
-    #one_sample = dataset[0]
-    #print(len(one_sample))
-    #print(one_sample['image'].dtype)
-    #print(one_sample['image'].shape)
-
-    dataset = DenoiseImageDataset(data_list, transform=data_transforms, load_mode='rgb')
+    data_list = '/data4/hanyp/dataset/gen_i2i_watermark_remove/finals/gen_i2i_watermark_remove_val_v1.2.txt'
+    dataset = DenoisePatchDataset(data_list, transform=data_transforms, load_mode='gray')
     print(len(dataset))
     one_sample = dataset[0]
     print(len(one_sample))
     print(one_sample['image'].dtype)
     print(one_sample['image'].shape)
+
+    #dataset = DenoiseImageDataset(data_list, transform=data_transforms, load_mode='gray')
+    #print(len(dataset))
+    #one_sample = dataset[0]
+    #print(len(one_sample))
+    #print(one_sample['image'].dtype)
+    #print(one_sample['image'].shape)
